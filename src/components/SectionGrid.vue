@@ -23,7 +23,7 @@ function open(url: string) {
           </template>
           <div class="section-container">
             <div v-for="link in section.links" :key="link.url" class="link-item">
-              <el-button
+              <!-- <el-button
                 :href="link.url"
                 :title="link.url"
                 :type="link.color ? 'primary' : 'primary'"
@@ -38,7 +38,15 @@ function open(url: string) {
               >
                 <img :src="link.iconUrl" :alt="link.label" class="link-icon-img" />
                 {{ link.label }}
-              </el-button>
+              </el-button> -->
+              <el-button-group @click="open(link.url)" size="large">
+                <el-button plain :dark="store.darkMode" :color="link.color">
+                  <img :src="link.iconUrl" :alt="link.label" class="link-icon-img" />
+                </el-button>
+                <el-button :dark="store.darkMode" :color="link.color">
+                  {{ link.label }}
+                </el-button>
+              </el-button-group>
               <el-tooltip v-if="link.updateTime" placement="right" :content="link.fullUpdateTime">
                 <template #default>
                   <div class="update-time-container">
@@ -83,9 +91,7 @@ function open(url: string) {
   align-items: center;
 }
 .link-icon-img {
-  width: 16px;
-  height: 16px;
-  margin-right: 8px;
+  width: 18px;
   border-radius: 2px;
 }
 .update-time-container {
