@@ -10,7 +10,7 @@ const { sections } = storeToRefs(store)
 
 <template>
   <el-container class="layout">
-    <AppNavbar />
+    <AppNavbar :sections="sections" />
     <el-main class="main">
       <SectionGrid :sections="sections" />
     </el-main>

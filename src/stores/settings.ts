@@ -9,6 +9,7 @@ type PersistedState = {
   siteTitle: string
   settingsDrawerWidth: number
   sections: NavSection[]
+  version: string
 }
 
 function loadPersisted(): PersistedState | null {
@@ -36,6 +37,7 @@ export const useSettingsStore = defineStore('settings', () => {
   const siteTitle = ref<string>(persisted?.siteTitle ?? SITE_TITLE)
   const settingsDrawerWidth = ref<number>(persisted?.settingsDrawerWidth ?? 420)
   const sections = ref<NavSection[]>(persisted?.sections ?? NAV_SECTIONS)
+  const version = ref<string>(persisted?.version ?? (import.meta.env.VITE_APP_VERSION || '1.0.0'))
   const getDarkMode = computed(() => darkMode.value)
 
   function setDarkMode(val: boolean) {
@@ -66,6 +68,7 @@ export const useSettingsStore = defineStore('settings', () => {
     // 以当前代码中的默认配置为准
     darkMode.value = false
     siteTitle.value = SITE_TITLE
+    version.value = (import.meta.env.VITE_APP_VERSION || '1.0.0')
     // 深拷贝，避免共享引用
     sections.value = JSON.parse(JSON.stringify(NAV_SECTIONS))
     try {
@@ -79,19 +82,21 @@ export const useSettingsStore = defineStore('settings', () => {
       siteTitle: siteTitle.value,
       settingsDrawerWidth: settingsDrawerWidth.value,
       sections: sections.value,
+      version: version.value,
     })
     applyDocumentTheme()
   }
 
   // persist + apply theme side effects
   watch(
-    [darkMode, siteTitle, settingsDrawerWidth, sections],
+    [darkMode, siteTitle, settingsDrawerWidth, sections, version],
     () => {
       savePersisted({
         darkMode: darkMode.value,
         siteTitle: siteTitle.value,
         settingsDrawerWidth: settingsDrawerWidth.value,
         sections: sections.value,
+        version: version.value,
       })
       applyDocumentTheme()
     },
@@ -106,6 +111,7 @@ export const useSettingsStore = defineStore('settings', () => {
     siteTitle,
     settingsDrawerWidth,
     sections,
+    version,
     getDarkMode,
     setDarkMode,
     toggleDarkMode,

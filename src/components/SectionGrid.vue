@@ -14,61 +14,44 @@ function open(url: string) {
 </script>
 
 <template>
-  <el-row :gutter="16">
-    <el-col
-      v-for="section in sections"
-      :key="section.title"
-      :xs="24"
-      :sm="12"
-      :md="8"
-      :lg="6"
-      :xl="6"
-    >
-      <el-card class="section">
-        <template #header>
-          <div class="section-title">{{ section.title }}</div>
-        </template>
-        <el-space direction="vertical" alignment="stretch" :size="8" fill>
-          <div v-for="link in section.links" :key="link.url" class="link-item">
-            <el-button
-              :href="link.url"
-              :title="link.url"
-              :type="link.color ? 'primary' : 'primary'"
-              :plain="!link.color"
-              :style="
-                link.color
-                  ? { backgroundColor: link.color, borderColor: link.color, color: '#fff' }
-                  : {}
-              "
-              @click="open(link.url)"
-              class="link-button"
-            >
-              <el-icon v-if="link.icon" class="link-icon">
-                <component :is="link.icon" />
-              </el-icon>
-              <img
-                v-else-if="link.iconUrl"
-                :src="link.iconUrl"
-                :alt="link.label"
-                class="link-icon-img"
-              />
-              {{ link.label }}
-            </el-button>
-            <el-tooltip
-              v-if="link.updateTime"
-              ref="popperRef"
-              placement="right"
-              :content="link.fullUpdateTime"
-            >
-              <template #default>
-                <el-text type="info">{{ link.updateTime }}</el-text>
-              </template>
-            </el-tooltip>
+  <div>
+    <el-row :gutter="16" style="padding-left: 8px; margin-top: 8px; margin-right: 8px">
+      <el-col v-for="(section, index) in sections" :key="index">
+        <el-card class="section">
+          <template #header>
+            <div class="section-title" :id="section.title">{{ section.title }}</div>
+          </template>
+          <div class="section-container">
+            <div v-for="link in section.links" :key="link.url" class="link-item">
+              <el-button
+                :href="link.url"
+                :title="link.url"
+                :type="link.color ? 'primary' : 'primary'"
+                :plain="!link.color"
+                :style="
+                  link.color
+                    ? { backgroundColor: link.color, borderColor: link.color, color: '#fff' }
+                    : {}
+                "
+                @click="open(link.url)"
+                class="link-button"
+              >
+                <img :src="link.iconUrl" :alt="link.label" class="link-icon-img" />
+                {{ link.label }}
+              </el-button>
+              <el-tooltip v-if="link.updateTime" placement="right" :content="link.fullUpdateTime">
+                <template #default>
+                  <div class="update-time-container">
+                    <el-text type="info" size="small">{{ link.updateTime }}</el-text>
+                  </div>
+                </template>
+              </el-tooltip>
+            </div>
           </div>
-        </el-space>
-      </el-card>
-    </el-col>
-  </el-row>
+        </el-card>
+      </el-col>
+    </el-row>
+  </div>
   <!-- Backtop 回到顶部组件 -->
   <el-backtop :right="100" :bottom="100" />
 </template>
@@ -80,8 +63,17 @@ function open(url: string) {
 .section-title {
   font-weight: 600;
 }
+.section-container {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+}
 .link-item {
-  position: relative;
+  width: 100%;
+  margin-right: 8px;
+  margin-bottom: 8px;
+  flex: 0 0 auto;
+  max-width: max-content;
 }
 .link-button {
   width: 100%;
@@ -90,21 +82,14 @@ function open(url: string) {
   display: flex;
   align-items: center;
 }
-.link-icon {
-  margin-right: 8px;
-  font-size: 16px;
-}
 .link-icon-img {
   width: 16px;
   height: 16px;
   margin-right: 8px;
   border-radius: 2px;
 }
-.update-time {
-  font-size: 12px;
-  color: var(--el-text-color-placeholder, #a8abb2);
-  text-align: right;
-  margin-top: 4px;
-  padding-right: 8px;
+.update-time-container {
+  align-self: flex-end;
+  width: fit-content;
 }
 </style>

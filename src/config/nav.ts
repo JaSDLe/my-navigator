@@ -61,7 +61,7 @@ export const NAV_SECTIONS: NavSection[] = [
       {
         label: 'MySQL',
         url: 'https://dev.mysql.com/downloads/mysql/',
-        iconUrl: 'https://dev.mysql.com/favicon.ico',
+        iconUrl: 'https://labs.mysql.com/common/themes/sakila/favicon.ico',
         color: '#409EFF',
         updateTime: '2024-01-15',
         fullUpdateTime: '2024-01-15 10:35:30',
@@ -93,7 +93,7 @@ export const NAV_SECTIONS: NavSection[] = [
       {
         label: 'Notepad++',
         url: 'https://notepad-plus-plus.org/downloads/',
-        iconUrl: 'https://notepad-plus-plus.org/favicon.ico',
+        iconUrl: 'https://avatars.githubusercontent.com/u/12589084?s=48&v=4',
         color: '#409EFF',
         updateTime: '2024-01-15',
         fullUpdateTime: '2024-01-15 10:35:30',
@@ -133,7 +133,7 @@ export const NAV_SECTIONS: NavSection[] = [
       {
         label: '微信开发者工具',
         url: 'https://developers.weixin.qq.com/miniprogram/dev/devtools/download.html',
-        iconUrl: 'https://developers.weixin.qq.com/favicon.ico',
+        iconUrl: 'https://res.wx.qq.com/a/wx_fed/assets/res/NTI4MWU5.ico',
         color: '#409EFF',
         updateTime: '2024-01-15',
         fullUpdateTime: '2024-01-15 10:35:30',
@@ -149,7 +149,7 @@ export const NAV_SECTIONS: NavSection[] = [
       {
         label: 'Dbeaver',
         url: 'https://dbeaver.io/download/',
-        iconUrl: 'https://dbeaver.io/favicon.ico',
+        iconUrl: 'https://dbeaver.io/wp-content/uploads/2016/07/beaver_icon_32x32.png',
         color: '#409EFF',
         updateTime: '2024-01-15',
         fullUpdateTime: '2024-01-15 10:35:30',
@@ -157,7 +157,7 @@ export const NAV_SECTIONS: NavSection[] = [
       {
         label: 'Postman',
         url: 'https://www.postman.com/downloads/',
-        iconUrl: 'https://www.postman.com/favicon.ico',
+        iconUrl: 'https://www.postman.com/_mk-www-next/favicon.ico',
         color: '#409EFF',
         updateTime: '2024-01-15',
         fullUpdateTime: '2024-01-15 10:35:30',
@@ -170,7 +170,7 @@ export const NAV_SECTIONS: NavSection[] = [
       {
         label: 'Vue',
         url: 'https://cn.vuejs.org/guide/quick-start.html',
-        iconUrl: 'https://cn.vuejs.org/favicon.ico',
+        iconUrl: 'https://cn.vuejs.org/logo.svg',
         color: '#67C23A',
         updateTime: '2024-01-15',
         fullUpdateTime: '2024-01-15 10:33:18',
@@ -178,7 +178,7 @@ export const NAV_SECTIONS: NavSection[] = [
       {
         label: 'Vite',
         url: 'https://cn.vite.dev/guide/',
-        iconUrl: 'https://cn.vite.dev/favicon.ico',
+        iconUrl: 'https://cn.vite.dev/logo.svg',
         color: '#E6A23C',
         updateTime: '2024-01-15',
         fullUpdateTime: '2024-01-15 10:34:22',
@@ -186,7 +186,7 @@ export const NAV_SECTIONS: NavSection[] = [
       {
         label: 'Vue Router',
         url: 'https://router.vuejs.org/zh/guide/',
-        iconUrl: 'https://router.vuejs.org/favicon.ico',
+        iconUrl: 'https://router.vuejs.org/logo.svg',
         color: '#67C23A',
         updateTime: '2024-01-15',
         fullUpdateTime: '2024-01-15 10:33:18',
@@ -194,7 +194,7 @@ export const NAV_SECTIONS: NavSection[] = [
       {
         label: 'Pinia',
         url: 'https://pinia.vuejs.org/zh/introduction.html',
-        iconUrl: 'https://pinia.vuejs.org/favicon.ico',
+        iconUrl: 'https://pinia.vuejs.org/logo.svg',
         color: '#67C23A',
         updateTime: '2024-01-15',
         fullUpdateTime: '2024-01-15 10:33:18',
@@ -202,7 +202,7 @@ export const NAV_SECTIONS: NavSection[] = [
       {
         label: 'Element Plus',
         url: 'https://element-plus.org/zh-CN/component/overview',
-        iconUrl: 'https://element-plus.org/favicon.ico',
+        iconUrl: 'https://element-plus.org/images/element-plus-logo-small.svg',
         color: '#409EFF',
         updateTime: '2024-01-15',
         fullUpdateTime: '2024-01-15 10:35:30',
@@ -210,7 +210,8 @@ export const NAV_SECTIONS: NavSection[] = [
       {
         label: 'Claude Code',
         url: 'https://docs.claude.com/en/docs/claude-code/model-config#environment-variables',
-        iconUrl: 'https://docs.claude.com/favicon.ico',
+        iconUrl:
+          'https://mintcdn.com/anthropic-claude-docs/JaG275Sqw0maE7Ce/_generated/favicon/favicon-32x32.png?fit=max&n=JaG275Sqw0maE7Ce&s=51dd1458d6bd4f62288e1397b960f5df',
         color: '#409EFF',
         updateTime: '2024-01-15',
         fullUpdateTime: '2024-01-15 10:35:30',
@@ -218,7 +219,8 @@ export const NAV_SECTIONS: NavSection[] = [
       {
         label: 'Qwen x Claude Code',
         url: 'https://help.aliyun.com/zh/model-studio/claude-code',
-        iconUrl: 'https://help.aliyun.com/favicon.ico',
+        iconUrl:
+          'https://img.alicdn.com/imgextra/i2/O1CN01TFs5Qw27uYvfA6gib_!!6000000007857-55-tps-32-32.svg',
         color: '#409EFF',
         updateTime: '2024-01-15',
         fullUpdateTime: '2024-01-15 10:35:30',
@@ -226,7 +228,8 @@ export const NAV_SECTIONS: NavSection[] = [
       {
         label: 'Qwen Code',
         url: 'https://help.aliyun.com/zh/model-studio/qwen-code',
-        iconUrl: 'https://help.aliyun.com/favicon.ico',
+        iconUrl:
+          'https://img.alicdn.com/imgextra/i2/O1CN01TFs5Qw27uYvfA6gib_!!6000000007857-55-tps-32-32.svg',
         color: '#409EFF',
         updateTime: '2024-01-15',
         fullUpdateTime: '2024-01-15 10:35:30',
@@ -242,7 +245,7 @@ export const NAV_SECTIONS: NavSection[] = [
       {
         label: '微信小程序',
         url: 'https://developers.weixin.qq.com/miniprogram/dev/framework/',
-        iconUrl: 'https://developers.weixin.qq.com/favicon.ico',
+        iconUrl: 'https://res.wx.qq.com/a/wx_fed/assets/res/NTI4MWU5.ico',
         color: '#409EFF',
         updateTime: '2024-01-15',
         fullUpdateTime: '2024-01-15 10:35:30',
@@ -250,7 +253,7 @@ export const NAV_SECTIONS: NavSection[] = [
       {
         label: 'Knife4j',
         url: 'https://doc.xiaominfo.com/docs/quick-start',
-        iconUrl: 'https://doc.xiaominfo.com/favicon.ico',
+        iconUrl: 'https://doc.xiaominfo.com/img/favicon.ico',
         color: '#409EFF',
         updateTime: '2024-01-15',
         fullUpdateTime: '2024-01-15 10:35:30',
@@ -258,7 +261,7 @@ export const NAV_SECTIONS: NavSection[] = [
       {
         label: 'Spring Boot',
         url: 'https://spring.io/projects/spring-boot',
-        iconUrl: 'https://spring.io/favicon.ico',
+        iconUrl: 'https://spring.io/favicon.svg',
         color: '#409EFF',
         updateTime: '2024-01-15',
         fullUpdateTime: '2024-01-15 10:35:30',
@@ -266,7 +269,7 @@ export const NAV_SECTIONS: NavSection[] = [
       {
         label: 'Spring Cloud',
         url: 'https://spring.io/projects/spring-cloud',
-        iconUrl: 'https://spring.io/favicon.ico',
+        iconUrl: 'https://spring.io/favicon.svg',
         color: '#409EFF',
         updateTime: '2024-01-15',
         fullUpdateTime: '2024-01-15 10:35:30',
@@ -290,7 +293,7 @@ export const NAV_SECTIONS: NavSection[] = [
       {
         label: 'Hutool',
         url: 'https://doc.hutool.cn/pages/index/',
-        iconUrl: 'https://doc.hutool.cn/favicon.ico',
+        iconUrl: 'https://doc.hutool.cn/img/favicon.ico',
         color: '#409EFF',
         updateTime: '2024-01-15',
         fullUpdateTime: '2024-01-15 10:35:30',
@@ -298,7 +301,7 @@ export const NAV_SECTIONS: NavSection[] = [
       {
         label: 'Easy Excel',
         url: 'https://easyexcel.opensource.alibaba.com/docs/current/',
-        iconUrl: 'https://easyexcel.opensource.alibaba.com/favicon.ico',
+        iconUrl: 'https://easyexcel.opensource.alibaba.com/img/favicon.ico',
         color: '#409EFF',
         updateTime: '2024-01-15',
         fullUpdateTime: '2024-01-15 10:35:30',
@@ -314,7 +317,7 @@ export const NAV_SECTIONS: NavSection[] = [
       {
         label: 'MyBatis',
         url: 'https://mybatis.org/mybatis-3/',
-        iconUrl: 'https://mybatis.org/favicon.ico',
+        iconUrl: 'https://avatars.githubusercontent.com/u/1483254?s=48&v=4',
         color: '#409EFF',
         updateTime: '2024-01-15',
         fullUpdateTime: '2024-01-15 10:35:30',
@@ -343,7 +346,7 @@ export const NAV_SECTIONS: NavSection[] = [
       {
         label: 'NPM',
         url: 'https://www.npmjs.com/',
-        iconUrl: 'https://www.npmjs.com/favicon.ico',
+        iconUrl: 'https://static-production.npmjs.com/b0f1a8318363185cc2ea6a40ac23eeb2.png',
         color: '#409EFF',
         updateTime: '2024-01-15',
         fullUpdateTime: '2024-01-15 10:35:30',
@@ -351,7 +354,8 @@ export const NAV_SECTIONS: NavSection[] = [
       {
         label: 'Maven Repository',
         url: 'https://mvnrepository.com/',
-        iconUrl: 'https://mvnrepository.com/favicon.ico',
+        iconUrl:
+          'https://mvnrepository.com/assets/images/e8a73ff26e5b1e3f20868111d80c5544-favicon.ico',
         color: '#409EFF',
         updateTime: '2024-01-15',
         fullUpdateTime: '2024-01-15 10:35:30',
@@ -364,7 +368,8 @@ export const NAV_SECTIONS: NavSection[] = [
       {
         label: '阿里云百炼',
         url: 'https://bailian.console.aliyun.com/?tab=model#/model-market/detail/qwen3-max',
-        iconUrl: 'https://bailian.console.aliyun.com/favicon.ico',
+        iconUrl:
+          'https://gw.alicdn.com/imgextra/i4/O1CN01vVn7g32134zNZEeAR_!!6000000006928-55-tps-24-24.svg',
         color: '#409EFF',
         updateTime: '2024-01-15',
         fullUpdateTime: '2024-01-15 10:35:30',
@@ -381,6 +386,14 @@ export const NAV_SECTIONS: NavSection[] = [
         label: '微信公众平台',
         url: 'https://mp.weixin.qq.com/',
         iconUrl: 'https://mp.weixin.qq.com/favicon.ico',
+        color: '#409EFF',
+        updateTime: '2024-01-15',
+        fullUpdateTime: '2024-01-15 10:35:30',
+      },
+      {
+        label: '魔搭ModelScope',
+        url: 'https://www.modelscope.cn/models/Qwen',
+        iconUrl: 'https://g.alicdn.com/sail-web/maas/2.9.94/favicon/128.ico',
         color: '#409EFF',
         updateTime: '2024-01-15',
         fullUpdateTime: '2024-01-15 10:35:30',
@@ -409,7 +422,8 @@ export const NAV_SECTIONS: NavSection[] = [
       {
         label: 'IMDb',
         url: 'https://www.imdb.com/',
-        iconUrl: 'https://www.imdb.com/favicon.ico',
+        iconUrl:
+          'https://m.media-amazon.com/images/G/01/imdb/images-ANDW73HA/favicon_iPhone_retina_180x180._CB1582158069_UX196_.png',
         color: '#409EFF',
         updateTime: '2024-01-15',
         fullUpdateTime: '2024-01-15 10:35:30',
@@ -454,7 +468,7 @@ export const NAV_SECTIONS: NavSection[] = [
       {
         label: '锤子便签',
         url: 'https://yun.smartisan.com/#/notes',
-        iconUrl: 'https://yun.smartisan.com/favicon.ico',
+        iconUrl: 'https://static.smartisanos.cn/common/img/favicon.ico',
         color: '#409EFF',
         updateTime: '2024-01-15',
         fullUpdateTime: '2024-01-15 10:35:30',
@@ -470,7 +484,7 @@ export const NAV_SECTIONS: NavSection[] = [
       {
         label: '微信网页版',
         url: 'https://wx.qq.com',
-        iconUrl: 'https://wx.qq.com/favicon.ico',
+        iconUrl: 'https://res.wx.qq.com/a/wx_fed/assets/res/NTI4MWU5.ico',
         color: '#409EFF',
         updateTime: '2024-01-15',
         fullUpdateTime: '2024-01-15 10:35:30',
@@ -539,7 +553,7 @@ export const NAV_SECTIONS: NavSection[] = [
       {
         label: 'DeepSeek',
         url: 'https://chat.deepseek.com',
-        iconUrl: 'https://chat.deepseek.com/favicon.ico',
+        iconUrl: 'https://chat.deepseek.com/favicon.svg',
         color: '#409EFF',
         updateTime: '2024-01-15',
         fullUpdateTime: '2024-01-15 10:35:30',
@@ -547,7 +561,7 @@ export const NAV_SECTIONS: NavSection[] = [
       {
         label: 'Qwen',
         url: 'https://chat.qwen.ai/',
-        iconUrl: 'https://chat.qwen.ai/favicon.ico',
+        iconUrl: 'https://assets.alicdn.com/g/qwenweb/qwen-webui-fe/0.0.223/favicon.png',
         color: '#409EFF',
         updateTime: '2024-01-15',
         fullUpdateTime: '2024-01-15 10:35:30',

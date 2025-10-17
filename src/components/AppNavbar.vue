@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { useSettingsStore } from '@/stores/settings'
+import type { NavSection } from '@/config/nav'
 import { ref, onMounted, onUnmounted } from 'vue'
 import SettingsDrawer from '@/components/SettingsDrawer.vue'
-import { Sunny, Moon } from '@element-plus/icons-vue'
+import { Sunny, Moon, Memo } from '@element-plus/icons-vue'
+
+defineProps<{ sections: NavSection[] }>()
 
 // 移除scrollToTop和refreshPage函数，使用Backtop组件
 
@@ -25,6 +28,21 @@ function updateTime() {
   currentTime.value = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
 }
 
+// 滚动到对应区域的函数
+function scrollToSection(title: string) {
+  const element = document.getElementById(title)
+  if (element) {
+    const offset = 30 // 设置偏移量
+    const elementPosition = element.getBoundingClientRect().top
+    const offsetPosition = elementPosition + window.pageYOffset - offset
+
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: 'smooth',
+    })
+  }
+}
+
 onMounted(() => {
   updateTime()
   timeInterval = setInterval(updateTime, 1000)
@@ -39,8 +57,28 @@ onUnmounted(() => {
 
 <template>
   <el-header class="navbar">
-    <div class="brand">{{ store.siteTitle }}</div>
+    <div class="brand" @click="$router.push('/')">
+      <img src="/favicon.png" alt="Favicon" class="favicon-icon" />
+      <span class="brand-text">{{ store.siteTitle }}</span>
+    </div>
+    <div class="menu">
+      <el-dropdown>
+        <Memo class="menu-icon" />
+        <template #dropdown>
+          <el-dropdown-menu>
+            <el-dropdown-item
+              v-for="(section, index) in sections"
+              :key="index"
+              @click="scrollToSection(section.title)"
+            >
+              {{ section.title }}
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
+    </div>
     <div class="spacer"></div>
+    <div class="version">v{{ store.version }}</div>
     <div class="datetime">{{ currentTime }}</div>
     <div class="actions">
       <el-switch v-model="store.darkMode" size="large" :active-icon="Moon" :inactive-icon="Sunny" />
@@ -68,11 +106,35 @@ onUnmounted(() => {
   z-index: 1000;
 }
 .brand {
+  display: flex;
+  align-items: center;
   font-weight: 700;
   color: var(--el-text-color-primary);
+  cursor: pointer;
+}
+.favicon-icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 8px;
+}
+.brand-text {
+  vertical-align: middle;
+}
+.menu {
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
+}
+.menu-icon {
+  width: 20px;
 }
 .spacer {
   flex: 1;
+}
+.version {
+  font-size: 14px;
+  color: var(--el-text-color-secondary);
+  margin-right: 16px;
 }
 .datetime {
   font-size: 16px;
