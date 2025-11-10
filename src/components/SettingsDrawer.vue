@@ -1,42 +1,60 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useSettingsStore } from '@/stores/settings'
-// import type { NavSection, NavLink } from '@/config/nav' // 暂时未使用
-// import * as ElementPlusIconsVue from '@element-plus/icons-vue' // 暂时未使用
 import { Download, Search } from '@element-plus/icons-vue'
 import type { ScrollbarInstance } from 'element-plus'
 import { getFaviconUrl } from '@/utils/favicon'
 import { ElMessage } from 'element-plus'
-import type { NavLink } from '@/config/nav'
+import { NAV_SECTIONS, type NavLink } from '@/config/nav'
+import ColorThief from 'colorthief'
 
+const colorThief = new ColorThief()
 const scrollbarRef = ref<ScrollbarInstance>()
 
 // 预定义颜色
-const predefinedColors = [
-  '#409EFF',
-  '#67C23A',
-  '#E6A23C',
-  '#F56C6C',
-  '#909399',
-  '#409EFF',
-  '#67C23A',
-  '#E6A23C',
-  '#F56C6C',
-  '#909399',
-  '#ff6b6b',
-  '#4ecdc4',
-  '#45b7d1',
-  '#96ceb4',
-  '#feca57',
-  '#ff9ff3',
-  '#54a0ff',
-  '#5f27cd',
-  '#00d2d3',
-  '#ff9f43',
-]
-
-// 图标列表（暂时未使用）
-// const iconList = Object.keys(ElementPlusIconsVue).slice(0, 50) // 限制显示前50个图标
+const predefinedColors = ref([
+  'rgb(196, 30, 58)', // Pantone 19-1664 Classic Red（经典红）
+  'rgb(15, 72, 127)', // Pantone 19-4053 Classic Blue（经典蓝）
+  'rgb(240, 101, 72)', // Pantone 16-1546 Peach Fuzz（2024 年度色，桃粉色）
+  'rgb(132, 177, 191)', // Pantone 14-4316 Serenity（宁静蓝）
+  'rgb(245, 210, 190)', // Pantone 13-1520 Rose Quartz（石英粉）
+  'rgb(29, 138, 113)', // Pantone 17-5641 Greenery（2017 年度色，清新绿）
+  'rgb(214, 25, 36)', // Pantone 18-1664 True Red（正红）
+  'rgb(96, 113, 165)', // Pantone 17-3938 Ultra Violet（2018 年度色，紫外光）
+  'rgb(250, 214, 21)', // Pantone 13-0647 Illuminating（2021 年度色，明亮黄）
+  'rgb(24, 24, 24)', // Pantone Black 6 C（经典黑）
+  'rgb(245, 245, 245)', // Pantone White（纯白，用于对比）
+  'rgb(102, 85, 70)', // Pantone 18-1246 Warm Taupe（暖灰褐）
+  'rgb(173, 203, 197)', // Pantone 14-5710 Mint（薄荷绿）
+  'rgb(205, 92, 92)', // Pantone 18-1564 Chili Pepper（辣椒红）
+  'rgb(70, 130, 180)', // Pantone 19-4052 Navy Blue（海军蓝）
+  'rgb(188, 143, 143)', // Pantone 16-1336 Rose Dust（玫瑰尘）
+  'rgb(128, 128, 105)', // Pantone 17-0620 Olive Green（橄榄绿）
+  'rgb(222, 184, 135)', // Pantone 13-0927 Desert Sand（沙漠沙）
+  'rgb(83, 104, 125)', // Pantone 19-4023 Blue Indigo（靛蓝）
+  'rgb(199, 181, 163)', // Pantone 13-0810 Pale Dogwood（淡山茱萸粉）
+  'rgb(144, 147, 153)', // 灰蓝
+  'rgb(170, 160, 150)', // 灰棕
+  'rgb(180, 165, 160)', // 灰粉
+  'rgb(130, 150, 140)', // 灰绿
+  'rgb(160, 150, 170)', // 灰紫
+  'rgb(190, 180, 160)', // 燕麦色
+  'rgb(150, 170, 180)', // 雾霾蓝
+  'rgb(175, 160, 155)', // 豆沙红
+  'rgb(140, 155, 145)', // 鼠尾草绿
+  'rgb(185, 175, 165)', // 浅卡其
+  'rgb(165, 155, 175)', // 灰薰衣草
+  'rgb(155, 145, 135)', // 水泥灰
+  'rgb(170, 185, 180)', // 灰青
+  'rgb(195, 185, 180)', // 奶油灰粉
+  'rgb(145, 160, 170)', // 高级灰蓝
+  'rgb(160, 140, 130)', // 陶土灰
+  'rgb(180, 190, 185)', // 冷灰白
+  'rgb(150, 140, 150)', // 灰玫瑰
+  'rgb(175, 185, 170)', // 灰橄榄
+  'rgb(165, 160, 150)', // 中性灰褐
+])
+const btnLoading = ref(false)
 
 // 格式化时间
 function formatTime(date: Date) {
@@ -88,6 +106,32 @@ function removeLink(sectionIndex: number, linkIndex: number) {
   store.sections[sectionIndex].links.splice(linkIndex, 1)
 }
 
+function getThemeColor(sectionIndex: number, linkIndex: number) {
+  const link = store.sections[sectionIndex].links[linkIndex]
+  if (link?.iconUrl) {
+    const img = new Image()
+    img.crossOrigin = 'Anonymous'
+    img.src = link.iconUrl
+    img.addEventListener('load', function () {
+      btnLoading.value = true
+      const paletteRes = colorThief.getPalette(img)
+      console.log('getPalette', paletteRes)
+      console.log('predefinedColors', predefinedColors.value)
+      if (paletteRes) {
+        // 去重
+        const uniqueColors = Array.from(
+          new Set(paletteRes.map((arr: number[]) => JSON.stringify(arr))),
+        ).map((str) => JSON.parse(str))
+        predefinedColors.value = uniqueColors.map((v: number[]) => `rgb(${v[0]}, ${v[1]}, ${v[2]})`)
+        console.log('new predefinedColors', predefinedColors.value)
+        btnLoading.value = false
+      } else {
+        btnLoading.value = false
+      }
+    })
+  }
+}
+
 function updateLinkTime(sectionIndex: number, linkIndex: number) {
   const link = store.sections[sectionIndex].links[linkIndex]
   const now = new Date()
@@ -111,7 +155,6 @@ async function fetchFavicon(sectionIndex: number, linkIndex: number) {
 
     if (faviconUrl) {
       link.iconUrl = faviconUrl
-      link.icon = '' // 清除Element Plus图标，使用网络图标
       updateLinkTime(sectionIndex, linkIndex)
       ElMessage.success('图标获取成功！')
     } else {
@@ -129,7 +172,12 @@ function onClose() {
 
 const clearIcon = (link: NavLink) => {
   link.iconUrl = ''
-  link.icon = ''
+}
+
+const resetIcon = (sectionIndex: number, linkIndex: number) => {
+  const link = store.sections[sectionIndex].links[linkIndex]
+  const sections = JSON.parse(JSON.stringify(NAV_SECTIONS))
+  link.iconUrl = sections[sectionIndex].links[linkIndex].iconUrl
 }
 </script>
 
@@ -215,36 +263,75 @@ const clearIcon = (link: NavLink) => {
                           <template #append>
                             <el-button
                               @click="clearIcon(link)"
-                              v-if="link.iconUrl || link.icon"
+                              v-if="link.iconUrl"
                               title="清除图标"
                             >
                               清除
                             </el-button>
+                            <el-button @click="resetIcon(sIdx, lIdx)" v-else title="恢复默认">
+                              重置
+                            </el-button>
                           </template>
                         </el-input>
-                        <div v-if="link.iconUrl" style="margin-top: 8px">
+                        <div
+                          v-if="link.iconUrl"
+                          style="margin-top: 8px; display: flex; align-items: center"
+                        >
+                          <div
+                            style="
+                              font-size: 12px;
+                              margin-right: 8px;
+                              color: var(--el-text-color-regular);
+                            "
+                          >
+                            图标预览
+                          </div>
                           <img
                             :src="link.iconUrl"
                             :alt="link.label + ' 图标'"
-                            style="width: 16px; height: 16px; border-radius: 2px; margin-right: 8px"
+                            style="height: 16px; margin-right: 8px"
                             @error="link.iconUrl = ''"
                           />
-                          <span style="font-size: 12px; color: var(--el-text-color-regular)"
-                            >图标预览</span
-                          >
+                          <img
+                            :src="link.iconUrl"
+                            :alt="link.label + ' 图标'"
+                            style="height: 32px; margin-right: 8px"
+                            @error="link.iconUrl = ''"
+                          />
+                          <img
+                            :src="link.iconUrl"
+                            :alt="link.label + ' 图标'"
+                            style="height: 64px; margin-right: 8px"
+                            @error="link.iconUrl = ''"
+                          />
+                          <img
+                            :src="link.iconUrl"
+                            :alt="link.label + ' 图标'"
+                            style="height: 128px; margin-right: 8px"
+                            :id="`imgId${sIdx}${lIdx}`"
+                            @error="link.iconUrl = ''"
+                          />
                         </div>
                       </el-form-item>
                     </div>
 
-                    <div>
+                    <div style="display: flex; align-items: baseline">
                       <el-form-item label="颜色">
                         <el-color-picker
                           v-model="link.color"
+                          size="large"
                           show-alpha
                           :predefine="predefinedColors"
                           @change="updateLinkTime(sIdx, lIdx)"
                         />
                       </el-form-item>
+                      <el-button
+                        size="small"
+                        :loading="btnLoading"
+                        :disabled="!link.iconUrl"
+                        @click="getThemeColor(sIdx, lIdx)"
+                        >获取主题色</el-button
+                      >
                     </div>
 
                     <div v-if="link.updateTime" class="time-display">
