@@ -10,6 +10,8 @@ type PersistedState = {
   settingsDrawerWidth: number
   sections: NavSection[]
   version: string
+  requestUrl: string
+  token: string
 }
 
 function loadPersisted(): PersistedState | null {
@@ -38,6 +40,8 @@ export const useSettingsStore = defineStore('settings', () => {
   const settingsDrawerWidth = ref<number>(persisted?.settingsDrawerWidth ?? 420)
   const sections = ref<NavSection[]>(persisted?.sections ?? NAV_SECTIONS)
   const version = ref<string>(persisted?.version ?? (import.meta.env.VITE_APP_VERSION || '1.0.0'))
+  const requestUrl = ref<string>(persisted?.requestUrl ?? '')
+  const token = ref<string>(persisted?.token ?? '')
   const getDarkMode = computed(() => darkMode.value)
 
   function setDarkMode(val: boolean) {
@@ -69,6 +73,8 @@ export const useSettingsStore = defineStore('settings', () => {
     darkMode.value = false
     siteTitle.value = SITE_TITLE
     version.value = (import.meta.env.VITE_APP_VERSION || '1.0.0')
+    requestUrl.value = ''
+    token.value = ''
     // 深拷贝，避免共享引用
     sections.value = JSON.parse(JSON.stringify(NAV_SECTIONS))
     try {
@@ -83,13 +89,23 @@ export const useSettingsStore = defineStore('settings', () => {
       settingsDrawerWidth: settingsDrawerWidth.value,
       sections: sections.value,
       version: version.value,
+      requestUrl: requestUrl.value,
+      token: token.value,
     })
     applyDocumentTheme()
   }
 
+  function setRequestUrl(val: string) {
+    requestUrl.value = val
+  }
+
+  function setToken(val: string) {
+    token.value = val
+  }
+
   // persist + apply theme side effects
   watch(
-    [darkMode, siteTitle, settingsDrawerWidth, sections, version],
+    [darkMode, siteTitle, settingsDrawerWidth, sections, version, requestUrl, token],
     () => {
       savePersisted({
         darkMode: darkMode.value,
@@ -97,6 +113,8 @@ export const useSettingsStore = defineStore('settings', () => {
         settingsDrawerWidth: settingsDrawerWidth.value,
         sections: sections.value,
         version: version.value,
+        requestUrl: requestUrl.value,
+        token: token.value,
       })
       applyDocumentTheme()
     },
@@ -112,12 +130,16 @@ export const useSettingsStore = defineStore('settings', () => {
     settingsDrawerWidth,
     sections,
     version,
+    requestUrl,
+    token,
     getDarkMode,
     setDarkMode,
     toggleDarkMode,
     setSiteTitle,
     setSettingsDrawerWidth,
     setSections,
+    setRequestUrl,
+    setToken,
     applyDocumentTheme,
     resetToDefaults,
   }

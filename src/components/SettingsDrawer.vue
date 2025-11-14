@@ -7,6 +7,7 @@ import { getFaviconUrl } from '@/utils/favicon'
 import { ElMessage } from 'element-plus'
 import { NAV_SECTIONS, type NavLink } from '@/config/nav'
 import ColorThief from 'colorthief'
+import { getProxyImg } from '@/api/proxy'
 
 const colorThief = new ColorThief()
 const scrollbarRef = ref<ScrollbarInstance>()
@@ -106,29 +107,57 @@ function removeLink(sectionIndex: number, linkIndex: number) {
   store.sections[sectionIndex].links.splice(linkIndex, 1)
 }
 
-function getThemeColor(sectionIndex: number, linkIndex: number) {
+async function getThemeColor(sectionIndex: number, linkIndex: number) {
   const link = store.sections[sectionIndex].links[linkIndex]
   if (link?.iconUrl) {
-    const img = new Image()
-    img.crossOrigin = 'Anonymous'
-    img.src = link.iconUrl
-    img.addEventListener('load', function () {
+    try {
       btnLoading.value = true
-      const paletteRes = colorThief.getPalette(img)
-      console.log('getPalette', paletteRes)
-      console.log('predefinedColors', predefinedColors.value)
-      if (paletteRes) {
-        // 去重
-        const uniqueColors = Array.from(
-          new Set(paletteRes.map((arr: number[]) => JSON.stringify(arr))),
-        ).map((str) => JSON.parse(str))
-        predefinedColors.value = uniqueColors.map((v: number[]) => `rgb(${v[0]}, ${v[1]}, ${v[2]})`)
-        console.log('new predefinedColors', predefinedColors.value)
+      
+      // 使用代理接口获取图片，避免CORS限制
+      const response = await getProxyImg(link.iconUrl)
+      
+      // 将响应的blob数据转换为图片
+      const blob = response.data
+      const imageUrl = URL.createObjectURL(blob)
+      
+      const img = new Image()
+      img.crossOrigin = 'Anonymous'
+      img.src = imageUrl
+      
+      img.addEventListener('load', function () {
+        try {
+          const paletteRes = colorThief.getPalette(img)
+          console.log('getPalette', paletteRes)
+          console.log('predefinedColors', predefinedColors.value)
+          if (paletteRes) {
+            // 去重
+            const uniqueColors = Array.from(
+              new Set(paletteRes.map((arr: number[]) => JSON.stringify(arr))),
+            ).map((str) => JSON.parse(str))
+            predefinedColors.value = uniqueColors.map((v: number[]) => `rgb(${v[0]}, ${v[1]}, ${v[2]})`)
+            console.log('new predefinedColors', predefinedColors.value)
+          }
+        } catch (error) {
+          console.error('提取颜色失败:', error)
+          ElMessage.error('提取颜色失败')
+        } finally {
+          // 释放创建的URL对象
+          URL.revokeObjectURL(imageUrl)
+          btnLoading.value = false
+        }
+      })
+      
+      img.addEventListener('error', function () {
+        console.error('图片加载失败')
+        ElMessage.error('图片加载失败')
+        URL.revokeObjectURL(imageUrl)
         btnLoading.value = false
-      } else {
-        btnLoading.value = false
-      }
-    })
+      })
+    } catch (error) {
+      console.error('获取图片失败:', error)
+      ElMessage.error('获取图片失败，请检查网络连接或图片URL')
+      btnLoading.value = false
+    }
   }
 }
 
@@ -203,6 +232,18 @@ const resetIcon = (sectionIndex: number, linkIndex: number) => {
           </el-form-item>
           <el-form-item label="站点标题">
             <el-input v-model="store.siteTitle" placeholder="输入站点标题" />
+          </el-form-item>
+          <el-divider content-position="left">后端配置</el-divider>
+          <el-form-item label="请求URL">
+            <el-input v-model="store.requestUrl" placeholder="输入请求URL" />
+          </el-form-item>
+          <el-form-item label="Token">
+            <el-input
+              v-model="store.token"
+              placeholder="输入认证Token"
+              type="password"
+              show-password
+            />
           </el-form-item>
           <el-divider content-position="left">分组与链接</el-divider>
           <el-collapse v-model="activeNames" expand-icon-position="left">
