@@ -1,8 +1,25 @@
 {
   "name": "my-navigator",
   "version": "0.0.1",
-  "private": true,
+  "description": "A self-hosted personal navigation dashboard for categorized developer links.",
   "type": "module",
+  "license": "MIT",
+  "author": "JaSDLe",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JaSDLe/my-navigator.git"
+  },
+  "bugs": {
+    "url": "https://github.com/JaSDLe/my-navigator/issues"
+  },
+  "homepage": "https://github.com/JaSDLe/my-navigator#readme",
+  "keywords": [
+    "navigation",
+    "dashboard",
+    "vue",
+    "vite",
+    "element-plus"
+  ],
   "engines": {
     "node": "^20.19.0 || >=22.12.0"
   },
