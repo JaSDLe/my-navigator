@@ -16,7 +16,7 @@ const { sections } = storeToRefs(store)
     </el-main>
     <el-footer class="footer">
       <template #default>
-        <div class="footer-content">Copyright © 2025</div>
+        <div class="footer-content">Copyright © 2025-2026</div>
       </template>
     </el-footer>
   </el-container>

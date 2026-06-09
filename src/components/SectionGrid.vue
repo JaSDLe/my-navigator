@@ -1,14 +1,34 @@
 <script setup lang="ts">
-import { ref, watch, onMounted, nextTick } from 'vue'
+import type { DropdownInstance } from 'element-plus'
 import type { NavSection } from '@/config/nav'
 import { useSettingsStore } from '@/stores/settings'
+import { ArrowRight } from '@element-plus/icons-vue'
 
 defineProps<{ sections: NavSection[] }>()
 const store = useSettingsStore()
 
-onMounted(() => {})
+const dropdownRefs = new Map<string, DropdownInstance>()
 
-function open(url: string) {
+function dropdownRef(label: string) {
+  return (el: DropdownInstance | null) => {
+    if (el) {
+      dropdownRefs.set(label, el)
+    } else {
+      dropdownRefs.delete(label)
+    }
+  }
+}
+
+function openDropdown(label: string) {
+  dropdownRefs.get(label)?.handleOpen()
+}
+
+function open(url: string | string[]) {
+  const urls = Array.isArray(url) ? url : [url]
+  window.open(urls[0], '_blank', 'noopener')
+}
+
+function selectUrl(url: string) {
   window.open(url, '_blank', 'noopener')
 }
 </script>
@@ -22,7 +42,7 @@ function open(url: string) {
             <div class="section-title" :id="section.title">{{ section.title }}</div>
           </template>
           <div class="section-container">
-            <div v-for="link in section.links" :key="link.url" class="link-item">
+            <div v-for="link in section.links" :key="link.label" class="link-item">
               <!-- <el-button
                 :href="link.url"
                 :title="link.url"
@@ -39,7 +59,36 @@ function open(url: string) {
                 <img :src="link.iconUrl" :alt="link.label" class="link-icon-img" />
                 {{ link.label }}
               </el-button> -->
-              <el-button-group @click="open(link.url)" size="large">
+              <el-dropdown
+                v-if="Array.isArray(link.url) && link.url.length > 1"
+                :ref="dropdownRef(link.label)"
+                trigger="hover"
+                @command="selectUrl"
+              >
+                <el-button-group size="large" @click="openDropdown(link.label)">
+                  <el-button plain :dark="store.darkMode" :color="link.color">
+                    <img :src="link.iconUrl" :alt="link.label" class="link-icon-img" />
+                  </el-button>
+                  <el-button :dark="store.darkMode" :color="link.color">
+                    {{ link.label }}
+                    <el-icon class="el-icon--right">
+                      <ArrowRight />
+                    </el-icon>
+                  </el-button>
+                </el-button-group>
+                <template #dropdown>
+                  <el-dropdown-menu>
+                    <el-dropdown-item
+                      v-for="(u, idx) in link.url"
+                      :key="idx"
+                      :command="u"
+                    >
+                      {{ u }}
+                    </el-dropdown-item>
+                  </el-dropdown-menu>
+                </template>
+              </el-dropdown>
+              <el-button-group v-else @click="open(link.url)" size="large">
                 <el-button plain :dark="store.darkMode" :color="link.color">
                   <img :src="link.iconUrl" :alt="link.label" class="link-icon-img" />
                 </el-button>

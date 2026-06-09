@@ -61,7 +61,7 @@ The app can run as a static frontend. Link data lives in `src/config/nav.ts` by 
 Optional environment variable:
 
 ```sh
-VITE_APP_VERSION=0.0.2
+VITE_APP_VERSION=0.0.3
 ```
 
 Optional backend proxy:

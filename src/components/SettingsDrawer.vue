@@ -5,7 +5,7 @@ import { Download, Search } from '@element-plus/icons-vue'
 import type { ScrollbarInstance } from 'element-plus'
 import { getFaviconUrl } from '@/utils/favicon'
 import { ElMessage } from 'element-plus'
-import { NAV_SECTIONS, type NavLink } from '@/config/nav'
+import { NAV_SECTIONS, getPrimaryUrl, type NavLink } from '@/config/nav'
 import ColorThief from 'colorthief'
 import { getProxyImg } from '@/api/proxy'
 
@@ -56,6 +56,23 @@ const predefinedColors = ref([
   'rgb(165, 160, 150)', // 中性灰褐
 ])
 const btnLoading = ref(false)
+
+function addUrlItem(sectionIndex: number, linkIndex: number) {
+  const link = store.sections[sectionIndex].links[linkIndex]
+  if (!Array.isArray(link.url)) {
+    link.url = [link.url as string]
+  }
+  link.url = [...link.url, '']
+}
+
+function removeUrlItem(sectionIndex: number, linkIndex: number, idx: number) {
+  const link = store.sections[sectionIndex].links[linkIndex]
+  if (!Array.isArray(link.url)) return
+  link.url.splice(idx, 1)
+  if (link.url.length <= 1) {
+    link.url = link.url[0]
+  }
+}
 
 // 格式化时间
 function formatTime(date: Date) {
@@ -173,14 +190,15 @@ function updateLinkTime(sectionIndex: number, linkIndex: number) {
 async function fetchFavicon(sectionIndex: number, linkIndex: number) {
   const link = store.sections[sectionIndex].links[linkIndex]
 
-  if (!link.url || !link.url.startsWith('http')) {
+  const primaryUrl = getPrimaryUrl(link.url)
+  if (!primaryUrl || !primaryUrl.startsWith('http')) {
     ElMessage.warning('请输入有效的网站链接')
     return
   }
 
   try {
     ElMessage.info('正在获取网站图标...')
-    const faviconUrl = await getFaviconUrl(link.url)
+    const faviconUrl = await getFaviconUrl(primaryUrl)
 
     if (faviconUrl) {
       link.iconUrl = faviconUrl
@@ -273,13 +291,37 @@ const resetIcon = (sectionIndex: number, linkIndex: number) => {
                             @input="updateLinkTime(sIdx, lIdx)"
                           />
                         </el-form-item>
-                        <el-form-item label="链接">
-                          <el-input
-                            v-model="link.url"
-                            placeholder="链接"
-                            @input="updateLinkTime(sIdx, lIdx)"
-                          />
-                        </el-form-item>
+                         <el-form-item label="链接">
+                           <div style="display: flex; flex-direction: column; gap: 6px">
+                             <template v-if="Array.isArray(link.url)">
+                               <div v-for="(u, idx) in link.url" :key="idx" style="display: flex; gap: 6px; align-items: center">
+                                 <el-input
+                                   v-model="link.url[idx]"
+                                   placeholder="链接"
+                                   @input="updateLinkTime(sIdx, lIdx)"
+                                 />
+                                 <el-button
+                                   v-if="link.url.length > 1"
+                                   type="danger"
+                                   link
+                                   @click="removeUrlItem(sIdx, lIdx, idx)"
+                                 >
+                                   删除
+                                 </el-button>
+                               </div>
+                             </template>
+                             <template v-else>
+                               <el-input
+                                 v-model="link.url"
+                                 placeholder="链接"
+                                 @input="updateLinkTime(sIdx, lIdx)"
+                               />
+                             </template>
+                             <el-button type="primary" link @click="addUrlItem(sIdx, lIdx)">
+                               新增链接
+                             </el-button>
+                           </div>
+                         </el-form-item>
                       </div>
                       <el-button type="danger" link @click="removeLink(sIdx, lIdx)">删除</el-button>
                     </div>
