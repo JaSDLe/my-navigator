@@ -129,14 +129,18 @@ async function getThemeColor(sectionIndex: number, linkIndex: number) {
   if (link?.iconUrl) {
     try {
       btnLoading.value = true
-      
-      // 使用代理接口获取图片，避免CORS限制
-      const response = await getProxyImg(link.iconUrl)
-      
-      // 将响应的blob数据转换为图片
-      const blob = response.data
-      const imageUrl = URL.createObjectURL(blob)
-      
+
+      let imageUrl: string
+
+      // 本地路径直接使用，远程URL走代理避免CORS
+      if (link.iconUrl.startsWith('/')) {
+        imageUrl = link.iconUrl
+      } else {
+        const response = await getProxyImg(link.iconUrl)
+        const blob = response.data
+        imageUrl = URL.createObjectURL(blob)
+      }
+
       const img = new Image()
       img.crossOrigin = 'Anonymous'
       img.src = imageUrl
@@ -158,8 +162,10 @@ async function getThemeColor(sectionIndex: number, linkIndex: number) {
           console.error('提取颜色失败:', error)
           ElMessage.error('提取颜色失败')
         } finally {
-          // 释放创建的URL对象
-          URL.revokeObjectURL(imageUrl)
+          // 只有 blob URL 需要释放
+          if (imageUrl.startsWith('blob:')) {
+            URL.revokeObjectURL(imageUrl)
+          }
           btnLoading.value = false
         }
       })
@@ -167,7 +173,9 @@ async function getThemeColor(sectionIndex: number, linkIndex: number) {
       img.addEventListener('error', function () {
         console.error('图片加载失败')
         ElMessage.error('图片加载失败')
-        URL.revokeObjectURL(imageUrl)
+        if (imageUrl.startsWith('blob:')) {
+          URL.revokeObjectURL(imageUrl)
+        }
         btnLoading.value = false
       })
     } catch (error) {
@@ -356,6 +364,17 @@ const resetIcon = (sectionIndex: number, linkIndex: number) => {
                             </el-button>
                           </template>
                         </el-input>
+                        <div
+                          v-if="link.iconUrl"
+                          style="margin-top: 4px; font-size: 12px; color: var(--el-text-color-placeholder)"
+                        >
+                          <template v-if="link.iconUrl.startsWith('/')">
+                            当前为本地路径图标
+                          </template>
+                          <template v-else>
+                            当前为远程URL图标
+                          </template>
+                        </div>
                         <div
                           v-if="link.iconUrl"
                           style="margin-top: 8px; display: flex; align-items: center"
