@@ -66,10 +66,10 @@ function selectUrl(url: string) {
                 @command="selectUrl"
               >
                 <el-button-group size="large" @click="openDropdown(link.label)">
-                  <el-button plain :dark="store.darkMode" :color="link.color">
+                  <el-button plain :dark="store.isDark" :color="link.color">
                     <img :src="link.iconUrl" :alt="link.label" class="link-icon-img" />
                   </el-button>
-                  <el-button :dark="store.darkMode" :color="link.color">
+                  <el-button :dark="store.isDark" :color="link.color">
                     {{ link.label }}
                     <el-icon class="el-icon--right">
                       <ArrowRight />
@@ -89,10 +89,10 @@ function selectUrl(url: string) {
                 </template>
               </el-dropdown>
               <el-button-group v-else @click="open(link.url)" size="large">
-                <el-button plain :dark="store.darkMode" :color="link.color">
+                <el-button plain :dark="store.isDark" :color="link.color">
                   <img :src="link.iconUrl" :alt="link.label" class="link-icon-img" />
                 </el-button>
-                <el-button :dark="store.darkMode" :color="link.color">
+                <el-button :dark="store.isDark" :color="link.color">
                   {{ link.label }}
                 </el-button>
               </el-button-group>

@@ -4,8 +4,10 @@ import { NAV_SECTIONS, SITE_TITLE, type NavSection } from '@/config/nav'
 
 const STORAGE_KEY = 'my-navigator-settings-v1'
 
+export type ThemeMode = 'light' | 'dark' | 'auto'
+
 type PersistedState = {
-  darkMode: boolean
+  themeMode: ThemeMode
   siteTitle: string
   settingsDrawerWidth: number
   sections: NavSection[]
@@ -35,21 +37,28 @@ function savePersisted(state: PersistedState): void {
 export const useSettingsStore = defineStore('settings', () => {
   const persisted = loadPersisted()
 
-  const darkMode = ref<boolean>(persisted?.darkMode ?? false)
+  // 兼容旧版 darkMode: boolean → themeMode: 'light' | 'dark' | 'auto'
+  const themeMode = ref<ThemeMode>(
+    persisted?.themeMode ??
+    (persisted?.darkMode ? 'dark' : 'auto')
+  )
   const siteTitle = ref<string>(persisted?.siteTitle ?? SITE_TITLE)
   const settingsDrawerWidth = ref<number>(persisted?.settingsDrawerWidth ?? 420)
   const sections = ref<NavSection[]>(persisted?.sections ?? NAV_SECTIONS)
   const version = ref<string>(persisted?.version ?? (import.meta.env.VITE_APP_VERSION || '1.0.0'))
   const requestUrl = ref<string>(persisted?.requestUrl ?? '')
   const token = ref<string>(persisted?.token ?? '')
-  const getDarkMode = computed(() => darkMode.value)
 
-  function setDarkMode(val: boolean) {
-    darkMode.value = val
-  }
+  // 是否实际处于暗黑模式（auto 时跟随系统）
+  const isDark = computed(() => {
+    if (themeMode.value === 'auto') {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches
+    }
+    return themeMode.value === 'dark'
+  })
 
-  function toggleDarkMode() {
-    darkMode.value = !darkMode.value
+  function setThemeMode(val: ThemeMode) {
+    themeMode.value = val
   }
 
   function setSiteTitle(val: string) {
@@ -65,26 +74,32 @@ export const useSettingsStore = defineStore('settings', () => {
   }
 
   function applyDocumentTheme() {
-    document.documentElement.classList.toggle('dark', darkMode.value)
+    document.documentElement.classList.toggle('dark', isDark.value)
   }
 
+  // 监听系统主题变化（仅在 auto 模式下需要响应）
+  const systemDarkQuery = window.matchMedia('(prefers-color-scheme: dark)')
+  function onSystemThemeChange() {
+    if (themeMode.value === 'auto') {
+      applyDocumentTheme()
+    }
+  }
+  systemDarkQuery.addEventListener('change', onSystemThemeChange)
+
   function resetToDefaults() {
-    // 以当前代码中的默认配置为准
-    darkMode.value = false
+    themeMode.value = 'auto'
     siteTitle.value = SITE_TITLE
     version.value = (import.meta.env.VITE_APP_VERSION || '1.0.0')
     requestUrl.value = ''
     token.value = ''
-    // 深拷贝，避免共享引用
     sections.value = JSON.parse(JSON.stringify(NAV_SECTIONS))
     try {
       localStorage.removeItem(STORAGE_KEY)
     } catch {
       // ignore
     }
-    // 立即保存一次，使后续会话保持一致
     savePersisted({
-      darkMode: darkMode.value,
+      themeMode: themeMode.value,
       siteTitle: siteTitle.value,
       settingsDrawerWidth: settingsDrawerWidth.value,
       sections: sections.value,
@@ -105,10 +120,10 @@ export const useSettingsStore = defineStore('settings', () => {
 
   // persist + apply theme side effects
   watch(
-    [darkMode, siteTitle, settingsDrawerWidth, sections, version, requestUrl, token],
+    [themeMode, siteTitle, settingsDrawerWidth, sections, version, requestUrl, token],
     () => {
       savePersisted({
-        darkMode: darkMode.value,
+        themeMode: themeMode.value,
         siteTitle: siteTitle.value,
         settingsDrawerWidth: settingsDrawerWidth.value,
         sections: sections.value,
@@ -125,16 +140,15 @@ export const useSettingsStore = defineStore('settings', () => {
   applyDocumentTheme()
 
   return {
-    darkMode,
+    themeMode,
+    isDark,
     siteTitle,
     settingsDrawerWidth,
     sections,
     version,
     requestUrl,
     token,
-    getDarkMode,
-    setDarkMode,
-    toggleDarkMode,
+    setThemeMode,
     setSiteTitle,
     setSettingsDrawerWidth,
     setSections,

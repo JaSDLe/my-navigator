@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { useSettingsStore } from '@/stores/settings'
+import { useSettingsStore, type ThemeMode } from '@/stores/settings'
 import type { NavSection } from '@/config/nav'
 import { ref, onMounted, onUnmounted } from 'vue'
 import SettingsDrawer from '@/components/SettingsDrawer.vue'
-import { Sunny, Moon, Memo } from '@element-plus/icons-vue'
+import { Sunny, Moon, Monitor, Memo } from '@element-plus/icons-vue'
 
 defineProps<{ sections: NavSection[] }>()
 
@@ -79,7 +79,31 @@ onUnmounted(() => {
     <div class="version">v{{ store.version }}</div>
     <div class="datetime">{{ currentTime }}</div>
     <div class="actions">
-      <el-switch v-model="store.darkMode" size="large" :active-icon="Moon" :inactive-icon="Sunny" />
+      <el-dropdown @command="store.setThemeMode">
+        <el-button size="large" circle>
+          <el-icon size="18">
+            <Sunny v-if="store.themeMode === 'light'" />
+            <Moon v-else-if="store.themeMode === 'dark'" />
+            <Monitor v-else />
+          </el-icon>
+        </el-button>
+        <template #dropdown>
+          <el-dropdown-menu>
+            <el-dropdown-item command="light" :class="{ 'is-active': store.themeMode === 'light' }">
+              <el-icon><Sunny /></el-icon>
+              <span>浅色模式</span>
+            </el-dropdown-item>
+            <el-dropdown-item command="dark" :class="{ 'is-active': store.themeMode === 'dark' }">
+              <el-icon><Moon /></el-icon>
+              <span>暗黑模式</span>
+            </el-dropdown-item>
+            <el-dropdown-item command="auto" :class="{ 'is-active': store.themeMode === 'auto' }">
+              <el-icon><Monitor /></el-icon>
+              <span>跟随系统</span>
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
     </div>
     <div class="actions">
       <el-button type="primary" @click="showSettings = true">设置</el-button>
