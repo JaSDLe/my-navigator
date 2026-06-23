@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { useSettingsStore } from '@/stores/settings'
 import { Download, Search } from '@element-plus/icons-vue'
 import type { ScrollbarInstance } from 'element-plus'
@@ -225,6 +225,22 @@ function onClose() {
   visible.value = false
 }
 
+// 窗口宽度，用于动态计算 drawer 最大宽度
+const windowWidth = ref(window.innerWidth)
+function onWindowResize() {
+  windowWidth.value = window.innerWidth
+}
+onMounted(() => window.addEventListener('resize', onWindowResize))
+onUnmounted(() => window.removeEventListener('resize', onWindowResize))
+
+// 最小 260px，最大为屏幕宽度的 90%
+const drawerMaxWidth = computed(() => Math.floor(windowWidth.value * 0.9))
+
+// 拖拽调整宽度结束后同步到 store，并限制范围
+function onDrawerResize(_evt: MouseEvent, size: number) {
+  store.settingsDrawerWidth = Math.max(260, Math.min(size, drawerMaxWidth.value))
+}
+
 const clearIcon = (link: NavLink) => {
   link.iconUrl = ''
 }
@@ -244,6 +260,7 @@ const resetIcon = (sectionIndex: number, linkIndex: number) => {
     :size="store.settingsDrawerWidth"
     :resizable="true"
     @close="onClose"
+    @resize-end="onDrawerResize"
   >
     <template #default>
       <el-scrollbar ref="scrollbarRef">
@@ -252,6 +269,8 @@ const resetIcon = (sectionIndex: number, linkIndex: number) => {
             <el-input-number
               v-model="store.settingsDrawerWidth"
               :step="5"
+              :min="260"
+              :max="drawerMaxWidth"
               step-strictly
               placeholder="请输入"
             />
