@@ -143,6 +143,11 @@ function selectUrl(url: string) {
   width: 18px;
   border-radius: 2px;
 }
+
+/* 暗黑模式下，图标加微弱光晕，让深色图标在暗色背景上可见 */
+html.dark .link-icon-img {
+  filter: drop-shadow(0 0 1px rgba(255, 255, 255, 0.4));
+}
 .update-time-container {
   align-self: flex-end;
   width: fit-content;

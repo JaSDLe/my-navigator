@@ -32,14 +32,12 @@ function updateTime() {
 function scrollToSection(title: string) {
   const element = document.getElementById(title)
   if (element) {
-    const offset = 30 // 设置偏移量
-    const elementPosition = element.getBoundingClientRect().top
-    const offsetPosition = elementPosition + window.pageYOffset - offset
-
-    window.scrollTo({
-      top: offsetPosition,
-      behavior: 'smooth',
-    })
+    // 获取目标元素所在卡片的顶部位置
+    const card = element.closest('.el-card') as HTMLElement | null
+    const target = card || element
+    const rect = target.getBoundingClientRect()
+    const scrollTop = window.scrollY + rect.top - 72
+    window.scrollTo({ top: scrollTop, behavior: 'smooth' })
   }
 }
 
@@ -99,10 +97,10 @@ onUnmounted(() => {
   border-bottom: 1px solid var(--el-border-color);
   backdrop-filter: saturate(1.2) blur(6px);
   background-color: var(--el-bg-color);
-  /* position: fixed;
+  position: fixed;
   top: 0;
   left: 0;
-  right: 0; */
+  right: 0;
   z-index: 1000;
 }
 .brand {

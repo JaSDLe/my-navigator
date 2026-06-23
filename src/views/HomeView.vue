@@ -23,6 +23,10 @@ const { sections } = storeToRefs(store)
 </template>
 
 <style scoped>
+.main {
+  padding-top: 72px; /* 56px navbar + 16px spacing */
+}
+
 .footer {
   height: 40px;
   display: flex;
