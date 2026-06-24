@@ -233,7 +233,8 @@ function onWindowResize() {
 onMounted(() => window.addEventListener('resize', onWindowResize))
 onUnmounted(() => window.removeEventListener('resize', onWindowResize))
 
-// 最小 260px，最大为屏幕宽度的 90%
+// 最小 260px，最大为屏幕宽度的 90%（移动端全屏）
+const isMobile = computed(() => windowWidth.value <= 640)
 const drawerMaxWidth = computed(() => Math.floor(windowWidth.value * 0.9))
 
 // 拖拽调整宽度结束后同步到 store，并限制范围
@@ -257,8 +258,8 @@ const resetIcon = (sectionIndex: number, linkIndex: number) => {
     v-model="visible"
     :with-header="true"
     title="设置"
-    :size="store.settingsDrawerWidth"
-    :resizable="true"
+    :size="isMobile ? '100%' : store.settingsDrawerWidth"
+    :resizable="!isMobile"
     @close="onClose"
     @resize-end="onDrawerResize"
   >

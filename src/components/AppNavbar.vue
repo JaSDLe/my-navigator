@@ -32,11 +32,13 @@ function updateTime() {
 function scrollToSection(title: string) {
   const element = document.getElementById(title)
   if (element) {
-    // 获取目标元素所在卡片的顶部位置
     const card = element.closest('.el-card') as HTMLElement | null
     const target = card || element
     const rect = target.getBoundingClientRect()
-    const scrollTop = window.scrollY + rect.top - 72
+    // 移动端 48px navbar + 8px = 56，桌面端 56px navbar + 16px = 72
+    const isMobile = window.innerWidth <= 640
+    const offset = isMobile ? 56 : 72
+    const scrollTop = window.scrollY + rect.top - offset
     window.scrollTo({ top: scrollTop, behavior: 'smooth' })
   }
 }
@@ -76,9 +78,9 @@ onUnmounted(() => {
       </el-dropdown>
     </div>
     <div class="spacer"></div>
-    <div class="version">v{{ store.version }}</div>
-    <div class="datetime">{{ currentTime }}</div>
-    <div class="actions">
+    <div class="version hide-on-mobile">v{{ store.version }}</div>
+    <div class="datetime hide-on-mobile">{{ currentTime }}</div>
+    <div class="actions theme-toggle">
       <el-dropdown @command="store.setThemeMode">
         <el-button size="large" circle>
           <el-icon size="18">
@@ -105,7 +107,7 @@ onUnmounted(() => {
         </template>
       </el-dropdown>
     </div>
-    <div class="actions">
+    <div class="actions settings-btn">
       <el-button type="primary" @click="showSettings = true">设置</el-button>
     </div>
   </el-header>
@@ -168,5 +170,41 @@ onUnmounted(() => {
 .actions {
   margin-right: 16px;
   /* margin-left: 8px; */
+}
+
+/* 移动端适配 */
+@media (max-width: 640px) {
+  .navbar {
+    padding: 0 8px;
+    height: 48px;
+  }
+  .hide-on-mobile {
+    display: none !important;
+  }
+  .brand-text {
+    font-size: 14px;
+  }
+  .favicon-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 4px;
+  }
+  .menu {
+    margin-left: 4px;
+  }
+  .menu-icon {
+    width: 16px;
+  }
+  .actions {
+    margin-right: 6px;
+  }
+  .theme-toggle .el-button {
+    width: 32px;
+    height: 32px;
+  }
+  .settings-btn .el-button {
+    font-size: 12px;
+    padding: 6px 10px;
+  }
 }
 </style>

@@ -10,7 +10,7 @@ export default defineConfig({
     vue(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.png', 'favicons/*.png', 'favicons/*.ico'],
+      includeAssets: ['favicon.png', 'favicons/*.png', 'favicons/*.ico', 'pwa-icons/*.png'],
       manifest: {
         name: '我的导航',
         short_name: '导航',
@@ -22,14 +22,20 @@ export default defineConfig({
         start_url: '/',
         icons: [
           {
-            src: '/favicon.png',
+            src: '/pwa-icons/icon-192x192.png',
             sizes: '192x192',
             type: 'image/png',
           },
           {
-            src: '/favicon.png',
+            src: '/pwa-icons/icon-512x512.png',
             sizes: '512x512',
             type: 'image/png',
+          },
+          {
+            src: '/pwa-icons/icon-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'maskable',
           },
         ],
       },

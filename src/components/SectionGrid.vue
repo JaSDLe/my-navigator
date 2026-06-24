@@ -152,4 +152,32 @@ html.dark .link-icon-img {
   align-self: flex-end;
   width: fit-content;
 }
+
+/* 移动端适配 */
+@media (max-width: 640px) {
+  .section-container {
+    flex-direction: column;
+  }
+  .link-item {
+    width: 100%;
+    max-width: 100%;
+    margin-right: 0;
+  }
+  .link-item :deep(.el-button) {
+    font-size: 14px;
+    padding: 8px 12px;
+  }
+  .link-item :deep(.el-button-group) {
+    width: 100%;
+  }
+  .link-icon-img {
+    width: 16px;
+  }
+  .section {
+    margin-bottom: 12px;
+  }
+  .section-title {
+    font-size: 15px;
+  }
+}
 </style>

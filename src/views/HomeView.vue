@@ -38,4 +38,10 @@ const { sections } = storeToRefs(store)
   text-align: center;
   color: var(--el-text-color-regular);
 }
+
+@media (max-width: 640px) {
+  .main {
+    padding-top: 56px; /* 48px navbar + 8px spacing */
+  }
+}
 </style>

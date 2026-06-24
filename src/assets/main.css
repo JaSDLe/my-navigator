@@ -89,6 +89,26 @@ body {
   }
 }
 
+/* 移动端 */
+@media (max-width: 640px) {
+  .el-main {
+    padding: 8px;
+  }
+}
+
+/* iOS safe-area 适配 */
+@supports (padding-top: env(safe-area-inset-top)) {
+  .el-header.navbar {
+    padding-top: env(safe-area-inset-top);
+    height: calc(56px + env(safe-area-inset-top));
+  }
+  @media (max-width: 640px) {
+    .el-header.navbar {
+      height: calc(48px + env(safe-area-inset-top));
+    }
+  }
+}
+
 /* 滚动条样式 */
 ::-webkit-scrollbar {
   width: 6px;
