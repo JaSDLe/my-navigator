@@ -791,6 +791,22 @@ export const NAV_SECTIONS: NavSection[] = [
         updateTime: '2024-01-15',
         fullUpdateTime: '2024-01-15 10:35:30',
       },
+      {
+        label: '主题档案',
+        url: 'https://topic.jasdlee.cc.cd',
+        iconUrl: '/favicons/topic.svg',
+        color: 'rgb(153, 27, 27)',
+        updateTime: '2026-08-31',
+        fullUpdateTime: '2026-08-31 15:17:30',
+      },
+      {
+        label: '嵩月影视库',
+        url: 'https://movie.jasdlee.cc.cd',
+        iconUrl: '/favicons/movie.svg',
+        color: 'rgb(0, 179, 164)',
+        updateTime: '2026-08-31',
+        fullUpdateTime: '2026-08-31 15:17:30',
+      },
     ],
   },
 ]
