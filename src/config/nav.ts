@@ -73,7 +73,7 @@ export const NAV_SECTIONS: NavSection[] = [
         updateTime: '2024-01-15',
         fullUpdateTime: '2024-01-15 10:35:30',
       },
-       {
+      {
         label: 'v0',
         url: 'https://v0.app/',
         iconUrl: '/favicons/v0.svg',
@@ -125,6 +125,14 @@ export const NAV_SECTIONS: NavSection[] = [
         color: 'rgb(38, 68, 86)',
         updateTime: '2026-09-03',
         fullUpdateTime: '2026-09-03 08:54:30',
+      },
+      {
+        label: 'The Python Package Index (PyPI)',
+        url: 'https://pypi.org/',
+        iconUrl: '/favicons/pypi.svg',
+        color: 'rgb(44, 100, 148)',
+        updateTime: '2026-09-07',
+        fullUpdateTime: '2026-09-07 08:54:30',
       },
     ],
   },
@@ -392,7 +400,7 @@ export const NAV_SECTIONS: NavSection[] = [
         updateTime: '2026-09-03',
         fullUpdateTime: '2026-09-03 08:54:30',
       },
-        {
+      {
         label: 'zilliz',
         url: 'https://cloud.zilliz.com/',
         iconUrl: '/favicons/zilliz.svg',
@@ -597,15 +605,15 @@ export const NAV_SECTIONS: NavSection[] = [
         updateTime: '2026-09-03',
         fullUpdateTime: '2026-09-03 08:54:30',
       },
-       {
+      {
         label: 'Qdrant',
         url: 'https://qdrant.tech/documentation',
         iconUrl: '/favicons/qdrant.ico',
-          color: 'rgb(220, 36, 76)',
+        color: 'rgb(220, 36, 76)',
         updateTime: '2026-09-03',
         fullUpdateTime: '2026-09-03 08:54:30',
       },
-       {
+      {
         label: 'Milvus',
         url: 'https://milvus.io/docs',
         iconUrl: '/favicons/milvus.png',
