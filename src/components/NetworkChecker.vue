@@ -16,6 +16,13 @@ interface SourceResult {
   asn?: string
   colo?: string
   error?: string
+  /**
+   * 视角说明：
+   * - client-to-cloudflare / browser：访客本机出口（可信）
+   * - function-egress：Pages Function 出网 IP（云端部署时≠访客出口）
+   * - local-geoip：本地开发回退
+   */
+  vantage?: string
 }
 
 interface LatencyResult {
@@ -225,6 +232,7 @@ async function fetchIpinfo() {
     isp: data.org || '',
     asn: (data.org || '').match(/AS\d+/)?.[0] || '',
     type: String(data.ip).includes(':') ? 'ipv6' : 'ipv4',
+    vantage: 'browser',
   }
 }
 
@@ -236,6 +244,7 @@ async function querySource(item: SourceResult) {
   item.isp = undefined
   item.asn = undefined
   item.colo = undefined
+  item.vantage = undefined
   try {
     const data = item.key === 'ipinfo' ? await fetchIpinfo() : await fetchViaProxy(item.key)
     if (!data?.ok || !data.ip) throw new Error(data?.error || '查询失败')
@@ -244,6 +253,7 @@ async function querySource(item: SourceResult) {
     item.isp = data.isp || ''
     item.asn = data.asn || ''
     item.colo = data.colo || ''
+    item.vantage = data.vantage || ''
     item.status = 'success'
   } catch (e) {
     item.status = 'error'
@@ -416,6 +426,29 @@ function sourceHost(url: string) {
     return url
   }
 }
+
+/** 本地开发：Function 从本机出网，国内源结果可信 */
+const isLocalDev = /^(localhost|127\.0\.0\.1|\[::1\])(:\d+)?$/.test(window.location.host)
+
+function vantageLabel(v?: string) {
+  switch (v) {
+    case 'browser':
+    case 'client-to-cloudflare':
+      return '本机出口'
+    case 'function-egress':
+      return isLocalDev ? '本机出口' : '云出口'
+    case 'local-geoip':
+      return '本地回退'
+    default:
+      return ''
+  }
+}
+
+function vantageTagType(v?: string): 'success' | 'warning' | 'info' {
+  if (v === 'function-egress' && !isLocalDev) return 'warning'
+  if (v === 'browser' || v === 'client-to-cloudflare') return 'success'
+  return 'info'
+}
 </script>
 
 <template>
@@ -509,6 +542,14 @@ function sourceHost(url: string) {
                 >
                   {{ row.name }}
                 </a>
+                <el-tag
+                  v-if="row.status === 'success' && vantageLabel(row.vantage)"
+                  size="small"
+                  :type="vantageTagType(row.vantage)"
+                  effect="plain"
+                >
+                  {{ vantageLabel(row.vantage) }}
+                </el-tag>
                 <el-icon v-if="row.status === 'loading'" class="is-loading muted"><Loading /></el-icon>
                 <el-icon v-else-if="row.status === 'success'" class="ok"><CircleCheck /></el-icon>
                 <el-icon v-else-if="row.status === 'error'" class="fail"><CircleClose /></el-icon>
@@ -562,6 +603,14 @@ function sourceHost(url: string) {
                 >
                   {{ row.name }}
                 </a>
+                <el-tag
+                  v-if="row.status === 'success' && vantageLabel(row.vantage)"
+                  size="small"
+                  :type="vantageTagType(row.vantage)"
+                  effect="plain"
+                >
+                  {{ vantageLabel(row.vantage) }}
+                </el-tag>
                 <el-icon v-if="row.status === 'loading'" class="is-loading muted"><Loading /></el-icon>
                 <el-icon v-else-if="row.status === 'success'" class="ok"><CircleCheck /></el-icon>
                 <el-icon v-else-if="row.status === 'error'" class="fail"><CircleClose /></el-icon>
@@ -587,7 +636,14 @@ function sourceHost(url: string) {
       </div>
 
       <div class="footnote">
-        国内源经 Pages Function 代理；国际源部分浏览器直连。国内 / 国际 IP 不一致通常表示走了代理或策略路由。
+        <template v-if="isLocalDev">
+          本地开发：Function 从本机出网，国内源结果即你的出口 IP。
+        </template>
+        <template v-else>
+          部署在 Cloudflare Pages 时，经 Function 代理的国内源显示的是
+          <strong>云端出网 IP</strong>，不是你家宽的出口；「本机出口」标签（IPinfo / Cloudflare）
+          才是你访问本站时的真实出口。国内/国际 IP 不一致通常表示走了代理或策略路由。
+        </template>
       </div>
     </el-card>
 

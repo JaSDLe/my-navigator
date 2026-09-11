@@ -109,24 +109,24 @@ const SOURCES = {
       }
     },
   },
+  // Cloudflare：读「当前请求」的边缘视图（CF-Connecting-IP + request.cf），
+// 而不是再 fetch cloudflare.com——否则在 Pages 上看到的是云端出口。
   cloudflare: {
-    url: 'https://www.cloudflare.com/cdn-cgi/trace',
-    parse: (text) => {
-      const map = {}
-      for (const line of text.split('\n')) {
-        const i = line.indexOf('=')
-        if (i > 0) map[line.slice(0, i).trim()] = line.slice(i + 1).trim()
-      }
-      const ip = map.ip
-      if (!ip) return { ok: false, error: 'parse failed', raw: text.slice(0, 200) }
+    fromRequest: (request) => {
+      const cf = request.cf || {}
+      const ip = request.headers.get('CF-Connecting-IP') || ''
+      if (!ip) return { ok: false, error: 'no CF-Connecting-IP' }
+      const asn = cf.asn != null ? `AS${cf.asn}` : ''
       return {
         ok: true,
         ip,
-        location: map.loc || '',
-        isp: map.colo || '',
-        colo: map.colo || '',
-        warp: map.warp || '',
+        location: [cf.country, cf.region, cf.city].filter(Boolean).join(' '),
+        isp: cf.asOrganization || '',
+        asn,
+        colo: cf.colo || '',
+        warp: request.headers.get('CF-Warp') || '',
         type: ip.includes(':') ? 'ipv6' : 'ipv4',
+        vantage: 'client-to-cloudflare',
       }
     },
   },
@@ -201,21 +201,30 @@ export async function onRequest(context) {
   }
 
   try {
-    let text
-    if (conf.customFetch) {
-      text = await conf.customFetch()
+    let parsed
+    if (conf.fromRequest) {
+      parsed = conf.fromRequest(request)
     } else {
-      const res = await fetch(conf.url, {
-        headers: {
-          'User-Agent':
-            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-          Accept: 'text/plain, text/html, application/json, */*',
-        },
-      })
-      const buf = await res.arrayBuffer()
-      text = conf.decode ? conf.decode(buf) : new TextDecoder('utf-8').decode(buf)
+      let text
+      if (conf.customFetch) {
+        text = await conf.customFetch()
+      } else {
+        const res = await fetch(conf.url, {
+          headers: {
+            'User-Agent':
+              'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            Accept: 'text/plain, text/html, application/json, */*',
+          },
+        })
+        const buf = await res.arrayBuffer()
+        text = conf.decode ? conf.decode(buf) : new TextDecoder('utf-8').decode(buf)
+      }
+      parsed = conf.parse(text)
+      // 代理抓取：看到的是本 Function 的出网 IP，不一定是访客出口
+      if (parsed?.ok) {
+        parsed = { ...parsed, vantage: 'function-egress' }
+      }
     }
-    const parsed = conf.parse(text)
     return json({
       source,
       fetchedAt: Date.now(),

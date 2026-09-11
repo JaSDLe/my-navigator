@@ -47,6 +47,7 @@ async function localSelfFallback() {
       timezone: data.timezone || '',
       fetchedAt: Date.now(),
       edge: false,
+      vantage: 'local-geoip',
     },
     { headers: DEV_CORS },
   )
@@ -67,7 +68,7 @@ function ipApiDevPlugin(): Plugin {
           const request = new Request(`http://localhost${url}`, { method: req.method ?? 'GET' })
 
           let response: Response
-          if (source === 'self') {
+          if (source === 'self' || source === 'cloudflare') {
             // 本地无 Cloudflare 边缘上下文，回退到第三方 GeoIP
             try {
               response = await selfOnRequest({ request, params: {} })
