@@ -70,6 +70,12 @@ Optional backend proxy:
 - Theme-color extraction calls `GET /test/img/proxy?url=<encoded-image-url>` through the configured base URL.
 - The proxy should return the remote image as a `Blob` response.
 
+Cloudflare Pages Functions:
+
+- `functions/api/ip/[source].js` proxies domestic IP sources (IPIP, 太平洋, 3322) and Cloudflare/ip-api for the multi-source comparison in 「在线工具 → 网络环境」.
+- Deployed automatically with the static site on Cloudflare Pages.
+- Local `npm run dev` mounts the same handlers under `/api/ip/*` via a Vite middleware plugin.
+
 ## Project Structure
 
 ```text
@@ -78,8 +84,11 @@ src/stores/settings.ts         Pinia store and localStorage persistence
 src/components/AppNavbar.vue   Header, section menu, version, time, theme switch
 src/components/SectionGrid.vue Navigation link grid
 src/components/SettingsDrawer.vue Link and settings editor
+src/components/NetworkChecker.vue Dual-stack IP, multi-source compare, latency matrix
+src/components/TimestampConverter.vue Unix timestamp converter tool
 src/utils/favicon.ts           Favicon discovery helper
 src/api/proxy.ts               Optional image proxy client
+functions/api/ip/[source].js   Cloudflare Pages Function for IP sources
 ```
 
 ## Quality Checks

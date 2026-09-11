@@ -1,16 +1,37 @@
 <script setup lang="ts">
-import { useSettingsStore, type ThemeMode } from '@/stores/settings'
+import { useSettingsStore } from '@/stores/settings'
 import type { NavSection } from '@/config/nav'
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import SettingsDrawer from '@/components/SettingsDrawer.vue'
-import { Sunny, Moon, Monitor, Memo } from '@element-plus/icons-vue'
+import { Sunny, Moon, Monitor, Memo, Switch, ArrowLeft } from '@element-plus/icons-vue'
+import { useRouter, useRoute } from 'vue-router'
+
+const router = useRouter()
+const route = useRoute()
 
 defineProps<{ sections: NavSection[] }>()
 
-// 移除scrollToTop和refreshPage函数，使用Backtop组件
-
 const store = useSettingsStore()
 const showSettings = ref(false)
+
+const isTools = computed(() => route.path.startsWith('/tools'))
+
+function goTools() {
+  if (isTools.value) {
+    // 已在工具页：滚回顶部，避免“点了没反应”
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+    return
+  }
+  void router.push('/tools')
+}
+
+function goHome() {
+  if (!isTools.value) {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+    return
+  }
+  void router.push('/')
+}
 
 // 当前时间显示
 const currentTime = ref('')
@@ -57,7 +78,7 @@ onUnmounted(() => {
 
 <template>
   <el-header class="navbar">
-    <div class="brand" @click="$router.push('/')">
+    <div class="brand" role="button" tabindex="0" @click="goHome" @keyup.enter="goHome">
       <img src="/favicon.png" alt="Favicon" class="favicon-icon" />
       <span class="brand-text">{{ store.siteTitle }}</span>
     </div>
@@ -78,6 +99,16 @@ onUnmounted(() => {
       </el-dropdown>
     </div>
     <div class="spacer"></div>
+    <div class="actions tools-btn">
+      <el-button v-if="isTools" text @click="goHome">
+        <el-icon><ArrowLeft /></el-icon>
+        返回首页
+      </el-button>
+      <el-button v-else text type="primary" @click="goTools">
+        <el-icon><Switch /></el-icon>
+        在线工具
+      </el-button>
+    </div>
     <div class="version hide-on-mobile">v{{ store.version }}</div>
     <div class="datetime hide-on-mobile">{{ currentTime }}</div>
     <div class="actions theme-toggle">

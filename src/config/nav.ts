@@ -408,6 +408,14 @@ export const NAV_SECTIONS: NavSection[] = [
         updateTime: '2026-09-03',
         fullUpdateTime: '2026-09-03 08:54:30',
       },
+      {
+        label: 'Google Auth Platform',
+        url: 'https://console.cloud.google.com/auth/overview',
+        iconUrl: '/favicons/gap.svg',
+        color: 'rgb(51, 103, 214)',
+        updateTime: '2026-09-11',
+        fullUpdateTime: '2026-09-11 08:54:30',
+      },
     ],
   },
   {
